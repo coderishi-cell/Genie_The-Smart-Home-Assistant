@@ -1,0 +1,1345 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Dynamic theme variables - controlled by React state */
+  --bgGradientStart: #0D1B2A; /* Dark Navy Blue */
+  --bgGradientEnd: #003F5C;   /* Deep Teal Blue */
+  --accentColor: #00E5FF;     /* Electric Cyan */
+  --accentColorRGB: 0, 229, 255; /* RGB for Electric Cyan */
+  --textColorPrimary: #F8F8FF;
+  --textColorPrimaryRGB: 248, 248, 255; /* RGB for Off-White */
+  --cardBgColor: rgba(23, 37, 59, 0.5); /* Translucent Dark Slate Blue */
+  --glowColor: #00E5FF;       /* Electric Cyan */
+  --bgColorPrimary: #0D1B2A; /* For contrasting text on accent buttons */
+  
+  /* Static theme variables */
+  --success-color: #10b981;
+  --warning-color: #f59e0b;
+  --error-color: #ef4444;
+  --border-radius: 12px;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background: linear-gradient(135deg, var(--bgGradientStart) 0%, var(--bgGradientEnd) 100%);
+  color: var(--textColorPrimary);
+  min-height: 100vh;
+  overflow-x: hidden;
+  transition: background 1s ease-in-out, color 0.5s ease-in-out;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(99, 102, 241, 0.6);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(99, 102, 241, 0.8);
+}
+
+/* Dynamic glow effects */
+.glow-effect {
+  box-shadow: 0 0 20px var(--glowColor);
+  transition: box-shadow 0.3s ease;
+}
+
+.glow-effect:hover {
+  box-shadow: 0 0 30px var(--glowColor);
+}
+
+/* Content Panel for major dashboard sections */
+.content-panel {
+  background: var(--cardBgColor); /* Uses the updated cardBgColor */
+  backdrop-filter: blur(12px); /* Slightly more blur */
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--border-radius, 16px); /* Larger default radius */
+  padding: 20px; /* Default padding for panels (lg:p-6 in Tailwind) */
+  box-shadow: var(--shadow-lg);
+  transition: background 0.5s ease-in-out, border-color 0.3s ease;
+}
+
+.content-panel:hover {
+  border-color: rgba(var(--accentColorRGB), 0.3); /* Use RGB version of accent for border */
+}
+
+/* Refined Glass morphism effect for specific inner elements if needed */
+.glass-effect {
+  background: var(--cardBgColor);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: background 0.5s ease-in-out;
+  /* Note: .content-panel now provides the primary panel look. 
+     .glass-effect might be used for nested elements or specific cases. 
+     The chat area still uses it directly for its custom shape and height. */
+}
+
+/* Device card styles */
+.device-card {
+  background: color-mix(in srgb, var(--cardBgColor) 90%, transparent);
+  border: 1px solid rgba(255, 255, 255, 0.05); /* More subtle default border */
+  border-radius: var(--border-radius);
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+  position: relative; /* For pseudo-elements or absolute positioned children */
+  overflow: hidden; /* To contain glows or effects */
+}
+
+.device-card:hover {
+  transform: translateY(-4px); /* Slightly more lift */
+  box-shadow: 0 10px 20px rgba(0,0,0,0.2), 0 0 15px rgba(var(--accentColorRGB), 0.3);
+  border-color: rgba(var(--accentColorRGB), 0.7); /* Brighter accent border on hover */
+  background: color-mix(in srgb, var(--cardBgColor) 70%, black 10%); /* Slightly shift bg on hover */
+}
+
+/* Style for when a device is in an "active" state (e.g. light is on) */
+.device-card.active-device {
+  border-left: 3px solid var(--accentColor); /* Prominent active indicator on the left */
+  /* Consider a subtle inner glow or background change if desired */
+  /* box-shadow: inset 0 0 10px rgba(var(--accentColorRGB), 0.2); */
+}
+
+/* Device icon styles */
+.device-icon {
+  transition: color 0.3s ease, filter 0.3s ease;
+}
+
+.device-icon.active {
+  color: var(--accentColor);
+  filter: drop-shadow(0 0 8px var(--glowColor));
+}
+
+/* Base for device control buttons */
+.device-control-button {
+  padding: 10px 16px; /* Adjusted padding */
+  border-radius: var(--border-radius, 8px);
+  font-weight: 500; /* medium */
+  transition: all 0.2s ease-in-out;
+  border: 1px solid transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%; 
+  text-align: center;
+  line-height: 1.2;
+}
+
+/* Active/On state for device control buttons */
+.device-control-button.active {
+  background-color: var(--accentColor);
+  color: var(--bgColorPrimary); /* Text color that contrasts with accent */
+  border-color: var(--accentColor);
+  box-shadow: 0 2px 8px rgba(var(--accentColorRGB), 0.3);
+}
+.device-control-button.active:hover {
+  background-color: color-mix(in srgb, var(--accentColor) 90%, white);
+  box-shadow: 0 4px 12px rgba(var(--accentColorRGB), 0.4);
+}
+
+/* Inactive/Off state for device control buttons */
+.device-control-button.inactive {
+  background-color: rgba(var(--textColorPrimaryRGB), 0.1);
+  color: var(--textColorPrimary);
+  border: 1px solid rgba(var(--textColorPrimaryRGB), 0.2);
+}
+.device-control-button.inactive:hover {
+  background-color: rgba(var(--textColorPrimaryRGB), 0.15);
+  border-color: rgba(var(--textColorPrimaryRGB), 0.3);
+}
+
+/* Disabled state */
+.device-control-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: rgba(var(--textColorPrimaryRGB), 0.05); /* More subtle disabled bg */
+  color: rgba(var(--textColorPrimaryRGB), 0.4);
+  border-color: rgba(var(--textColorPrimaryRGB), 0.1);
+}
+
+/* Styles for sliders (range inputs) */
+.device-slider {
+  width: 100%;
+  height: 8px;
+  border-radius: 4px;
+  background-color: rgba(var(--textColorPrimaryRGB), 0.15); /* Default track color */
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+  outline: none;
+  transition: background-color 0.2s ease;
+}
+.device-slider:hover {
+   background-color: rgba(var(--textColorPrimaryRGB), 0.25);
+}
+
+.device-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  background-color: var(--accentColor);
+  border-radius: 50%;
+  border: 2px solid var(--cardBgColor);
+  box-shadow: 0 0 5px rgba(var(--accentColorRGB), 0.5);
+  transition: all 0.2s ease;
+}
+.device-slider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  background-color: var(--accentColor);
+  border-radius: 50%;
+  border: 2px solid var(--cardBgColor);
+  box-shadow: 0 0 5px rgba(var(--accentColorRGB), 0.5);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.device-slider::-webkit-slider-thumb:hover {
+  background-color: color-mix(in srgb, var(--accentColor) 85%, white);
+  transform: scale(1.1);
+}
+.device-slider::-moz-range-thumb:hover {
+  background-color: color-mix(in srgb, var(--accentColor) 85%, white);
+  transform: scale(1.1);
+}
+
+/* Small circular buttons (e.g., for temp control) */
+.device-adjust-button {
+  width: 30px; /* Slightly smaller */
+  height: 30px;
+  background-color: rgba(var(--textColorPrimaryRGB), 0.1);
+  color: var(--textColorPrimary);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  font-weight: bold;
+  border: 1px solid rgba(var(--textColorPrimaryRGB), 0.15);
+  transition: all 0.2s ease;
+}
+.device-adjust-button:hover {
+  background-color: rgba(var(--textColorPrimaryRGB), 0.2);
+  border-color: rgba(var(--accentColorRGB), 0.4);
+  color: var(--accentColor);
+}
+.device-adjust-button:active {
+  transform: scale(0.92);
+  background-color: rgba(var(--accentColorRGB), 0.2);
+}
+
+/* Mood Selector & Quick Scene Button Styles */
+.mood-button {
+  padding: 10px 20px; /* Generous padding */
+  border-radius: 10px; /* Consistent with other rounded elements */
+  font-weight: 500; /* medium */
+  transition: all 0.25s ease-in-out;
+  border: 1px solid rgba(var(--textColorPrimaryRGB), 0.2);
+  background-color: rgba(var(--textColorPrimaryRGB), 0.08);
+  color: var(--textColorPrimary);
+  cursor: pointer;
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+}
+
+.mood-button:hover:not(.active):not(:disabled) {
+  background-color: rgba(var(--textColorPrimaryRGB), 0.15);
+  border-color: rgba(var(--accentColorRGB), 0.5);
+  color: var(--accentColor);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.mood-button.active {
+  background-color: var(--accentColor);
+  color: var(--bgColorPrimary); /* Text color for contrast on accent */
+  border-color: var(--accentColor);
+  box-shadow: 0 3px 10px rgba(var(--accentColorRGB), 0.3), var(--shadow-sm);
+  font-weight: 600; /* Slightly bolder for active state */
+}
+
+.mood-button.active:hover:not(:disabled) {
+  background-color: color-mix(in srgb, var(--accentColor) 90%, white);
+  box-shadow: 0 4px 12px rgba(var(--accentColorRGB), 0.4), var(--shadow-md);
+}
+
+.mood-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: rgba(var(--textColorPrimaryRGB), 0.05);
+  border-color: rgba(var(--textColorPrimaryRGB), 0.1);
+  box-shadow: none;
+  color: rgba(var(--textColorPrimaryRGB), 0.4);
+}
+
+/* Chat Interface Styles */
+.chat-bubble {
+  padding: 10px 16px;
+  border-radius: 16px; /* Consistent rounded corners */
+  max-width: 85%;
+  line-height: 1.5;
+  box-shadow: var(--shadow-sm);
+  word-wrap: break-word;
+  display: flex;
+  flex-direction: column;
+}
+
+.user-bubble {
+  background: linear-gradient(135deg, var(--accentColor) 0%, color-mix(in srgb, var(--accentColor) 70%, #007BFF) 100%);
+  color: var(--bgColorPrimary); /* Ensure good contrast on accent */
+  border-radius: 16px 16px 4px 16px; /* Slightly different rounding for user */
+  align-self: flex-end;
+  margin-left: auto; /* Pushes to the right */
+}
+
+.genie-bubble {
+  background: color-mix(in srgb, var(--cardBgColor) 85%, black 5%);
+  color: var(--textColorPrimary);
+  border: 1px solid rgba(var(--textColorPrimaryRGB), 0.1);
+  border-radius: 16px 16px 16px 4px; /* Slightly different rounding for genie */
+  align-self: flex-start;
+  margin-right: auto; /* Pushes to the left */
+}
+
+.chat-message-sender {
+  display: flex;
+  align-items: center;
+  margin-bottom: 6px;
+  font-size: 0.8rem;
+  opacity: 0.8;
+}
+
+.chat-message-sender img, .chat-message-sender .sender-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  margin-right: 8px;
+  background-color: var(--accentColor); /* Placeholder bg for avatar */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  color: var(--bgColorPrimary);
+}
+
+.chat-message-text {
+  font-size: 0.95rem;
+}
+
+/* Genie Loading Indicator */
+.genie-loading-dots-container {
+  display: flex;
+  align-items: center; /* Align items vertically */
+  padding: 8px 12px; /* Padding for the container itself */
+}
+
+.genie-loading-dots-container .sender-avatar {
+  margin-right: 10px;
+}
+
+.genie-loading-dots-text {
+  font-size: 0.8rem;
+  opacity: 0.8;
+  margin-right: 8px;
+}
+
+.loading-dot {
+  width: 7px;
+  height: 7px;
+  background-color: var(--accentColor);
+  border-radius: 50%;
+  margin: 0 2px; /* Spacing between dots */
+}
+
+/* Modern Chat Input Area - Completely Redesigned */
+.chat-input-container {
+  padding: 20px;
+  background-color: rgba(var(--textColorPrimaryRGB), 0.02);
+  border-top: 1px solid rgba(var(--textColorPrimaryRGB), 0.08);
+}
+
+.chat-input-form {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: end;
+  gap: 12px;
+  background: rgba(var(--textColorPrimaryRGB), 0.05);
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(var(--textColorPrimaryRGB), 0.1);
+  border-radius: 25px;
+  padding: 6px;
+  transition: all 0.3s ease;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.chat-input-form:focus-within {
+  border-color: rgba(var(--accentColorRGB), 0.5);
+  background: rgba(var(--textColorPrimaryRGB), 0.08);
+  box-shadow: 0 0 0 3px rgba(var(--accentColorRGB), 0.1);
+}
+
+/* Text Input Wrapper */
+.chat-input-wrapper {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  position: relative;
+}
+
+.chat-input-textarea {
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--textColorPrimary);
+  font-size: 15px;
+  font-family: inherit;
+  line-height: 1.4;
+  padding: 12px 16px;
+  resize: none;
+  min-height: 20px;
+  max-height: 120px;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+.chat-input-textarea::placeholder {
+  color: rgba(var(--textColorPrimaryRGB), 0.6);
+  font-weight: 400;
+}
+
+.chat-input-textarea::-webkit-scrollbar {
+  width: 4px;
+}
+
+.chat-input-textarea::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.chat-input-textarea::-webkit-scrollbar-thumb {
+  background: rgba(var(--textColorPrimaryRGB), 0.3);
+  border-radius: 2px;
+}
+
+/* Icon Buttons - Modern Design */
+.chat-icon-button {
+  width: 44px;
+  height: 44px;
+  border-radius: 22px;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.chat-icon-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: inherit;
+  transition: all 0.25s ease;
+}
+
+.chat-icon-button svg {
+  width: 22px;
+  height: 22px;
+  z-index: 2;
+  position: relative;
+}
+
+/* Voice Button States */
+.voice-button-placeholder {
+  background: linear-gradient(135deg, rgba(var(--accentColorRGB), 0.15), rgba(var(--accentColorRGB), 0.1));
+  color: var(--accentColor);
+}
+
+.voice-button-placeholder:hover:not(:disabled) {
+  background: linear-gradient(135deg, rgba(var(--accentColorRGB), 0.25), rgba(var(--accentColorRGB), 0.2));
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(var(--accentColorRGB), 0.2);
+}
+
+.voice-button-placeholder:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(var(--accentColorRGB), 0.3);
+}
+
+.voice-button-placeholder:disabled {
+  background: rgba(var(--textColorPrimaryRGB), 0.08);
+  color: rgba(var(--textColorPrimaryRGB), 0.4);
+  cursor: not-allowed;
+}
+
+/* Active Voice Button (Recording) */
+.voice-button-active {
+  background: linear-gradient(135deg, rgba(255, 51, 51, 0.2), rgba(255, 51, 51, 0.15));
+  color: #ff3333;
+  animation: pulse-recording 2s infinite;
+}
+
+@keyframes pulse-recording {
+  0%, 100% { 
+    box-shadow: 0 0 0 0 rgba(255, 51, 51, 0.4);
+  }
+  50% { 
+    box-shadow: 0 0 0 8px rgba(255, 51, 51, 0);
+  }
+}
+
+.voice-button-active:hover:not(:disabled) {
+  background: linear-gradient(135deg, rgba(255, 51, 51, 0.3), rgba(255, 51, 51, 0.25));
+  transform: translateY(-1px);
+}
+
+/* Send Button */
+.chat-send-button {
+  background: linear-gradient(135deg, var(--accentColor), color-mix(in srgb, var(--accentColor) 85%, white));
+  color: var(--bgColorPrimary);
+  box-shadow: 0 2px 8px rgba(var(--accentColorRGB), 0.3);
+}
+
+.chat-send-button:hover:not(:disabled) {
+  background: linear-gradient(135deg, color-mix(in srgb, var(--accentColor) 90%, white), var(--accentColor));
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(var(--accentColorRGB), 0.4);
+}
+
+.chat-send-button:active:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(var(--accentColorRGB), 0.5);
+}
+
+.chat-send-button:disabled {
+  background: rgba(var(--textColorPrimaryRGB), 0.1);
+  color: rgba(var(--textColorPrimaryRGB), 0.4);
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* Quick Action Buttons in Chat Input Area */
+.quick-action-buttons-container {
+  margin-top: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.quick-action-button {
+  padding: 6px 12px;
+  font-size: 0.75rem; /* Slightly smaller */
+  background-color: rgba(var(--textColorPrimaryRGB), 0.08);
+  color: rgba(var(--textColorPrimaryRGB), 0.8);
+  border: 1px solid rgba(var(--textColorPrimaryRGB), 0.15);
+  border-radius: 16px; /* Pill shape */
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+.quick-action-button:hover:not(:disabled) {
+  background-color: rgba(var(--textColorPrimaryRGB), 0.12);
+  border-color: rgba(var(--accentColorRGB), 0.4);
+  color: var(--accentColor);
+  transform: translateY(-1px);
+}
+.quick-action-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Landing Page Widgets (Time & Weather) */
+/* .landing-widgets-grid { // This class is no longer used, .landing-widgets (flex) is used instead.
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 400px), 1fr)); 
+  gap: 24px; 
+  padding: 24px 0; 
+  align-items: stretch; 
+} */
+
+.time-widget-container,
+.weather-widget-container {
+  padding: 28px 32px; /* Generous padding: lg:p-8 */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-height: 250px; /* Ensure a good minimum height */
+  /* Inherits .content-panel and .glass-effect for base styling */
+}
+
+.time-display {
+  font-size: 4.5rem; /* lg:text-7xl */
+  font-weight: 700; /* bold */
+  line-height: 1.1;
+  color: var(--textColorPrimary);
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+  text-shadow: 0 0 15px rgba(var(--accentColorRGB), 0.3);
+}
+
+.date-display {
+  font-size: 1.25rem; /* lg:text-xl */
+  font-weight: 400; /* normal */
+  color: rgba(var(--textColorPrimaryRGB), 0.8);
+  opacity: 0.9;
+}
+
+/* Weather Widget Specifics */
+.weather-main-info {
+  display: flex;
+  flex-direction: column; /* Stack icon, temp, condition vertically */
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.weather-icon {
+  font-size: 4.5rem; /* lg:text-7xl */
+  line-height: 1;
+  margin-bottom: 4px;
+  color: var(--accentColor); /* Use accent color for the icon */
+}
+
+.weather-temp {
+  font-size: 3.75rem; /* lg:text-6xl */
+  font-weight: 600; /* semibold */
+  line-height: 1;
+  color: var(--textColorPrimary);
+  text-shadow: 0 0 10px rgba(var(--textColorPrimaryRGB), 0.2);
+}
+
+.weather-condition {
+  font-size: 1.25rem; /* lg:text-xl */
+  font-weight: 500; /* medium */
+  color: rgba(var(--textColorPrimaryRGB), 0.9);
+  margin-top: 4px;
+}
+
+.weather-location {
+  font-size: 1.5rem; /* lg:text-2xl */
+  font-weight: 500; /* medium */
+  color: var(--textColorPrimary);
+  margin-bottom: 8px;
+}
+
+.weather-description {
+  font-size: 0.9rem; /* text-sm */
+  color: rgba(var(--textColorPrimaryRGB), 0.7);
+  max-width: 300px;
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.weather-details-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  width: 100%;
+  max-width: 380px; /* Limit width of details grid */
+  margin-top: auto; /* Pushes to bottom if widget has extra space */
+  padding-top: 16px;
+  border-top: 1px solid rgba(var(--textColorPrimaryRGB), 0.1);
+}
+
+.weather-detail-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 0;
+}
+
+.weather-detail-item .label {
+  font-size: 0.75rem; /* text-xs */
+  color: rgba(var(--textColorPrimaryRGB), 0.6);
+  margin-bottom: 4px;
+  text-transform: uppercase;
+}
+
+.weather-detail-item .value {
+  font-size: 1rem; /* text-base */
+  font-weight: 500; /* medium */
+  color: var(--textColorPrimary);
+}
+
+.api-placeholder-note {
+  font-size: 0.7rem; /* text-xs */
+  color: rgba(var(--textColorPrimaryRGB), 0.4);
+  margin-top: 16px;
+  font-style: italic;
+}
+
+/* App Layout & Page Transitions */
+.app-container {
+  background-color: var(--bgColorPrimary);
+  background-image: linear-gradient(160deg, var(--bgGradientStart) 0%, var(--bgGradientEnd) 100%);
+  color: var(--textColorPrimary);
+  /* overflow-x: hidden; Already set, but overflow:hidden below covers it */
+  height: 100vh; /* Fix height to viewport */
+  overflow: hidden; /* Prevent ALL scrolling on the app container itself */
+  display: flex; /* Added to make flex layout work as intended with fixed height */
+  flex-direction: column; /* Added */
+}
+
+/* Header Styling - Base and Variants */
+.app-header {
+  width: 100%;
+  z-index: 10;
+  /* Base glass effect can be defined here if common, or in variants */
+}
+
+.landing-header {
+  padding: 1.5rem 0; /* Removed horizontal padding */
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background: linear-gradient(135deg, rgba(var(--accentColorRGB), 0.05) 0%, transparent 50%, rgba(var(--accentColorRGB), 0.05) 100%);
+}
+
+.landing-header-content {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3rem;
+  max-width: none;
+  margin: 0 auto;
+  width: 100%;
+  padding: 0 3rem;
+  box-sizing: border-box;
+}
+
+.dashboard-header {
+  padding: 0.875rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  backdrop-filter: blur(16px) saturate(150%);
+  -webkit-backdrop-filter: blur(16px) saturate(150%);
+  background-color: rgba(8, 16, 32, 0.85); /* Darker, more refined glass */
+  border-bottom: 1px solid rgba(var(--accentColorRGB), 0.15);
+  position: sticky;
+  top: 0;
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Header Content Wrappers */
+.header-content-wrapper {
+  width: 100%;
+  display: flex;
+  transition: all 0.5s cubic-bezier(0.43, 0.13, 0.23, 0.96);
+}
+
+/* Genie Title Styling - Variants */
+.landing-genie-title {
+  margin-bottom: 1rem;
+}
+
+.landing-genie-title h1 {
+  font-size: 4.5rem;
+  line-height: 0.9;
+  margin-bottom: 1rem;
+}
+
+.landing-genie-title .text-lg {
+  font-size: 1.25rem;
+  max-width: 400px;
+  opacity: 0.8;
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+/* Main content wrapper for landing page */
+.landing-main-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  align-items: center;
+  justify-content: center;
+  width: 100%; /* Takes full width of its parent */
+  max-width: 90%; /* <<< CONSTRAIN THIS to make widgets smaller overall */
+  margin: 0 auto; /* Center this constrained block */
+}
+
+@media (max-width: 1024px) {
+  .landing-main-content {
+    flex-direction: column;
+    gap: 0;
+    align-items: center;
+  }
+}
+
+/* Improved landing widgets layout */
+.landing-widgets {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+  margin-top: 0;
+  justify-content: center;
+  align-items: stretch; /* Ensure wrappers stretch to the same height */
+  width: 100%;
+  max-width: 100%;
+  position: relative;
+}
+
+/* This is the direct flex child of .landing-widgets */
+.landing-widgets .widget-wrapper {
+  flex: 1 1 0; /* Grow to fill space, allow shrinking, basis of 0 */
+  min-width: 0; /* Important for allowing flex items to shrink below content size */
+  max-width: none !important; /* Force override any max-width from elsewhere */
+  display: flex; /* Make this a flex container for its child (the actual widget) */
+  align-items: stretch; /* Ensure the child widget stretches vertically */
+  justify-content: stretch; /* Ensure the child widget stretches horizontally */
+}
+
+/* Ensure widgets take full container width for proper centering - OLD SELECTOR - REMOVED/MODIFIED */
+/*
+.landing-widgets .time-widget-container,
+.landing-widgets .weather-widget-container {
+  flex: 1 1 0; 
+  width: 100%;    
+  min-width: 0;
+  max-width: none !important; 
+}
+*/
+
+/* Compact and elegant landing widgets (actual component root) */
+.landing-widgets .time-widget-container,
+.landing-widgets .weather-widget-container {
+  padding: 3rem 5rem; /* Reduced H-padding slightly */
+  min-height: 280px;
+  background: rgba(var(--textColorPrimaryRGB), 0.08);
+  border: 1px solid rgba(var(--textColorPrimaryRGB), 0.15);
+  backdrop-filter: blur(16px);
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  transition: all 0.4s ease;
+  position: relative;
+  overflow: hidden;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: none !important;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.landing-widgets .time-widget-container .time-display {
+  font-size: 9rem; /* Slightly reduced */
+  font-weight: 800;
+  line-height: 1;
+  margin-bottom: 1rem;
+  text-shadow: 0 0 15px rgba(var(--accentColorRGB), 0.4);
+  background: linear-gradient(135deg, var(--textColorPrimary) 0%, rgba(var(--accentColorRGB), 0.9) 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.landing-widgets .time-widget-container .date-display {
+  font-size: 3rem; /* Slightly reduced */
+  opacity: 0.8;
+  font-weight: 500;
+  letter-spacing: 0.025em;
+  text-align: center;
+}
+
+.landing-widgets .weather-widget-container .weather-main-info {
+  flex-direction: row;
+  gap: 4rem; /* Maintained gap */
+  margin-bottom: 1.5rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.landing-widgets .weather-widget-container .weather-icon {
+  font-size: 8rem; /* Slightly reduced */
+  color: var(--accentColor);
+  margin-bottom: 0;
+  filter: drop-shadow(0 0 10px rgba(var(--accentColorRGB), 0.5));
+  flex-shrink: 0;
+}
+
+.landing-widgets .weather-widget-container .weather-temp-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.landing-widgets .weather-widget-container .weather-temp {
+  font-size: 8rem; /* Slightly reduced */
+  font-weight: 800;
+  line-height: 1;
+  background: linear-gradient(135deg, var(--textColorPrimary) 0%, rgba(var(--accentColorRGB), 0.9) 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  text-shadow: 0 0 10px rgba(var(--accentColorRGB), 0.4);
+}
+
+.landing-widgets .weather-widget-container .weather-condition {
+  font-size: 2rem; /* Slightly reduced */
+  opacity: 0.85;
+  font-weight: 500;
+  letter-spacing: 0.025em;
+}
+
+.landing-widgets .weather-widget-container .weather-location {
+  font-size: 2.5rem; /* Slightly reduced */
+  opacity: 0.9;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  letter-spacing: 0.025em;
+  color: var(--accentColor);
+  text-align: center;
+}
+
+.landing-widgets .weather-widget-container .weather-description {
+  display: block;
+  font-size: 1.8rem; /* Slightly reduced */
+  opacity: 0.8;
+  margin-bottom: 1.5rem;
+  line-height: 1.5;
+  text-align: center;
+  width: 100%;
+  max-width: 100%;
+}
+
+.landing-widgets .weather-widget-container .weather-details-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4rem; /* Maintained gap */
+  width: 100%;
+  max-width: 100%;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(var(--textColorPrimaryRGB), 0.15);
+}
+
+/* Dashboard widgets positioned on the left */
+.dashboard-widgets-left {
+  grid-area: left;
+  display: flex;
+  gap: 1rem;
+  justify-self: flex-start;
+}
+
+/* GENIE title centered */
+.dashboard-genie-title {
+  grid-area: center;
+  justify-self: center;
+  text-align: center;
+}
+
+/* Mood selector positioned on the right */
+.mood-selector-dashboard-header {
+  grid-area: right;
+  justify-self: flex-end;
+  display: flex;
+  align-items: center;
+}
+
+.mood-selector-dashboard-header .mood-selector-container {
+  padding: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.mood-selector-dashboard-header .mood-button {
+  padding: 0.5rem 0.875rem;
+  font-size: 0.8rem;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.mood-selector-dashboard-header .mood-button:hover:not(.active) {
+  background-color: rgba(var(--textColorPrimaryRGB), 0.1);
+  border-color: rgba(var(--accentColorRGB), 0.4);
+  transform: translateY(-1px);
+}
+
+.mood-selector-dashboard-header .mood-selector-title {
+  display: none; /* Hide "Select Mood:" text in header to save space */
+}
+
+/* Enhanced GENIE title styling for dashboard */
+.dashboard-genie-title h1 {
+  font-size: 2.25rem; /* Slightly smaller for better proportion */
+  white-space: nowrap;
+  padding: 0.25rem 0;
+  line-height: 1;
+  letter-spacing: 0.05em;
+  filter: drop-shadow(0 0 8px rgba(var(--accentColorRGB), 0.4));
+}
+
+/* Compact widget styling for dashboard left position */
+.dashboard-widgets-left .widget-wrapper {
+  transition: all 0.3s ease;
+}
+
+.dashboard-widgets-left .time-widget-container,
+.dashboard-widgets-left .weather-widget-container {
+  background: rgba(var(--textColorPrimaryRGB), 0.04);
+  border: 1px solid rgba(var(--textColorPrimaryRGB), 0.08);
+  border-radius: 10px;
+  padding: 0.5rem 0.75rem;
+  backdrop-filter: blur(8px);
+  min-width: 90px;
+  min-height: 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.dashboard-widgets-left .weather-widget-container {
+  min-width: 110px; /* Slightly wider to accommodate city name */
+}
+
+.dashboard-widgets-left .time-widget-container .time-display {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 0.125rem;
+  line-height: 1;
+}
+
+.dashboard-widgets-left .time-widget-container .date-display {
+  font-size: 0.65rem;
+  opacity: 0.6;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.dashboard-widgets-left .weather-widget-container .weather-main-info {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  flex-direction: row;
+  margin-bottom: 0.25rem;
+}
+
+.dashboard-widgets-left .weather-widget-container .weather-icon {
+  width: 20px;
+  height: 20px;
+  font-size: 1.25rem;
+}
+
+.dashboard-widgets-left .weather-widget-container .weather-temp {
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.dashboard-widgets-left .weather-widget-container .weather-condition {
+  font-size: 0.65rem;
+  opacity: 0.7;
+  display: none; /* Keep hidden for minimal design */
+}
+
+.dashboard-widgets-left .weather-widget-container .weather-location {
+  font-size: 0.6rem;
+  opacity: 0.6;
+  font-weight: 500;
+  line-height: 1;
+  text-align: center;
+  display: block; /* Show city name */
+}
+
+.dashboard-widgets-left .weather-widget-container .weather-description,
+.dashboard-widgets-left .weather-widget-container .weather-details-grid {
+  display: none; /* Hide detailed info in dashboard header */
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 768px) {
+  .dashboard-header-content {
+    grid-template-columns: auto 1fr auto;
+    gap: 0.375rem;
+    padding: 0 0.5rem;
+  }
+  
+  .dashboard-genie-title h1 {
+    font-size: 1.75rem;
+  }
+  
+  .dashboard-widgets-left {
+    gap: 0.375rem;
+  }
+  
+  .dashboard-widgets-left .time-widget-container,
+  .dashboard-widgets-left .weather-widget-container {
+    min-width: 75px;
+    padding: 0.375rem 0.5rem;
+    min-height: 42px;
+  }
+  
+  .dashboard-widgets-left .weather-widget-container {
+    min-width: 85px; /* Slightly wider for city name on mobile */
+  }
+  
+  .dashboard-widgets-left .time-widget-container .time-display {
+    font-size: 0.875rem;
+  }
+  
+  .dashboard-widgets-left .time-widget-container .date-display {
+    font-size: 0.6rem;
+  }
+  
+  .dashboard-widgets-left .weather-widget-container .weather-temp {
+    font-size: 0.875rem;
+  }
+  
+  .dashboard-widgets-left .weather-widget-container .weather-icon {
+    width: 16px;
+    height: 16px;
+    font-size: 1rem;
+  }
+  
+  .dashboard-widgets-left .weather-widget-container .weather-location {
+    font-size: 0.55rem;
+  }
+}
+
+/* Widgets Container Styling - Variants */
+.widgets-container {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.landing-widgets {
+  flex-direction: column;
+  gap: 2rem;
+  margin-top: 3rem;
+}
+
+@media (min-width: 768px) { 
+  .landing-widgets {
+    flex-direction: row;
+    gap: 3rem;
+    justify-content: center;
+    margin-top: 4rem;
+  }
+}
+
+.landing-widgets .widget-wrapper {
+  /* Widgets are larger on landing page */
+}
+
+@media (min-width: 768px) {
+  .landing-widgets .widget-wrapper {
+    /* Maintain responsive sizing */
+  }
+}
+
+/* Widget Wrapper - Common Styles */
+.widget-wrapper {
+  transition: all 0.3s ease;
+}
+
+/* Updated Genie Title Styling - cleaned up */
+.genie-title-container { 
+  /* Common container, Framer Motion will animate its layout */
+}
+
+.dashboard-genie-title .text-lg { 
+ display: none; /* Hide subtitle in dashboard header */
+}
+
+/* Main Content Area Styling (where dashboard cards, chat etc. live) */
+.main-content-area {
+  padding-top: 1rem; /* Ensure content doesn't hide under sticky header if header is not part of flex flow */
+  flex-grow: 1; /* Make it take available vertical space */
+  overflow-y: auto; /* Allow THIS area to scroll if its content is too tall */
+  overflow-x: hidden; /* Prevent horizontal scroll in content area */
+  display: flex; /* Added to ensure its children can also use flex properties like flex-grow */
+  flex-direction: column; /* Added */
+}
+
+.landing-page-content {
+  /* Styles for the content shown ONLY on the landing page (e.g., the enter button) */
+  flex-grow: 1; /* Ensure it takes up space in main-content-area if it's the only child */
+  display: flex; /* For centering its content */
+  flex-direction: column; /* For centering its content */
+  align-items: center; /* For centering its content */
+  justify-content: center; /* For centering its content */
+}
+
+.dashboard-main-content {
+  /* Styles for the main dashboard view (device cards, chat, etc.) */
+  flex-grow: 1; /* Allow the dashboard content to fill the scrollable main-content-area */
+  /* The <main> tag inside this will then layout the actual dashboard items */
+}
+
+
+/* Specific styles for Time and Weather widgets for the landing page (large view) */
+/* These ensure they maintain their large appearance when in .landing-widgets */
+.landing-widgets .time-widget-container {
+  padding: 1.5rem; /* Slightly reduced padding, was 2rem */
+  min-height: 180px; /* Slightly reduced min-height, was 200px */
+}
+.landing-widgets .time-widget-container .time-display {
+  font-size: 4rem; /* Slightly reduced, was 4.5rem */
+}
+.landing-widgets .time-widget-container .date-display {
+  font-size: 1.15rem; /* Slightly reduced, was 1.25rem */
+}
+
+.landing-widgets .weather-widget-container {
+  padding: 1.25rem; /* Slightly reduced padding, was 1.5rem */
+  min-height: 220px; /* Slightly reduced min-height, was 250px */
+}
+
+.landing-widgets .weather-widget-container .weather-main-info {
+  flex-direction: column;
+  gap: 0.3rem; /* Slightly reduced gap, was 0.5rem */
+  margin-bottom: 0.75rem; /* Slightly reduced, was 1rem */
+}
+.landing-widgets .weather-widget-container .weather-icon {
+  font-size: 4rem; /* Slightly reduced, was 5rem */
+}
+.landing-widgets .weather-widget-container .weather-temp {
+  font-size: 3rem; /* Slightly reduced, was 3.5rem */
+}
+.landing-widgets .weather-widget-container .weather-condition {
+  font-size: 1.1rem; /* Slightly reduced, was 1.2rem */
+}
+.landing-widgets .weather-widget-container .weather-location {
+  font-size: 1rem; /* Slightly reduced, was 1.1rem */
+  margin-bottom: 0.6rem; /* Slightly reduced, was 0.75rem */
+}
+.landing-widgets .weather-widget-container .weather-description {
+  font-size: 0.85rem; /* Slightly reduced, was 0.9rem */
+  margin-bottom: 0.75rem; /* Slightly reduced, was 1rem */
+}
+.landing-widgets .weather-widget-container .weather-details-grid {
+  gap: 0.75rem; /* Slightly reduced, was 1rem */
+  font-size: 0.85rem; /* Slightly reduced, was 0.9rem */
+}
+
+
+/* Ensure content panels are styled correctly */
+.content-panel {
+  background-color: var(--cardBgColor);
+  padding: 1.5rem; /* p-6 */
+  border-radius: var(--rounded-box, 1rem); /* rounded-2xl */
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(10px) saturate(120%);
+  -webkit-backdrop-filter: blur(10px) saturate(120%);
+  border: 1px solid rgba(var(--accentColorRGB), 0.1);
+  transition: all 0.3s ease;
+}
+
+.content-panel:hover {
+  border: 1px solid rgba(var(--accentColorRGB), 0.3);
+  box-shadow: 0 12px 40px 0 rgba(var(--accentColorRGB), 0.15);
+  transform: translateY(-4px);
+}
+
+/* Ensure glass effect is defined if used directly in JSX and not through content-panel */
+.glass-effect {
+    background-color: var(--cardBgColor);
+    backdrop-filter: blur(10px) saturate(120%);
+    -webkit-backdrop-filter: blur(10px) saturate(120%);
+    border: 1px solid rgba(var(--accentColorRGB), 0.1);
+    border-radius: var(--rounded-box, 1rem);
+}
+
+
+/* Further refine glassmorphism for the dashboard header specifically */
+.dashboard-header.glass-effect {
+    background-color: rgba(12, 22, 39, 0.75); /* Slightly more opaque for better readability */
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    border-bottom: 1px solid rgba(var(--accentColorRGB), 0.25);
+}
+
+
+/* Styles for the Enter Smart Dashboard button if not covered by .mood-button */
+/* (It uses .mood-button active, which should be fine, but specific overrides could go here) */
+
+
+/* Adjustments to chat and device cards if needed for the new layout */
+/* For example, if the dashboard header takes up space, you might need to adjust padding/margins */
+.dashboard-main-content main {
+  /* padding-top: 1rem; /* Add padding if header is not sticky or if overlap occurs */
+}
+
+.dashboard-header-content {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr; /* Left area, center content, right area */
+  grid-template-areas: "left center right";
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* Landing page dashboard button */
+.landing-dashboard-button {
+  background: linear-gradient(135deg, var(--accentColor) 0%, color-mix(in srgb, var(--accentColor) 80%, #007BFF) 100%);
+  color: var(--bgColorPrimary);
+  border: none;
+  padding: 1rem 2.5rem;
+  border-radius: 50px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: 0.025em;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 24px rgba(var(--accentColorRGB), 0.3);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.landing-dashboard-button:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 12px 32px rgba(var(--accentColorRGB), 0.4);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--accentColor) 90%, white) 0%, color-mix(in srgb, var(--accentColor) 85%, #007BFF) 100%);
+}
+
+.landing-dashboard-button:active {
+  transform: translateY(0) scale(0.98);
+} 

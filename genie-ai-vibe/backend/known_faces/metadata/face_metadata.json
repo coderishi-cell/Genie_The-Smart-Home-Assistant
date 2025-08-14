@@ -1,0 +1,54 @@
+{
+  "Pritha Das": {
+    "name": "Pritha Das",
+    "added_date": "2025-06-11T16:32:54",
+    "photo_paths": [
+      "known_faces\\photos\\Pritha Das_1.jpg",
+      "known_faces\\photos\\Pritha Das_2.jpg"
+    ],
+    "access_level": "standard",
+    "notes": "",
+    "encoding_count": 2,
+    "quality_score": 1.0,
+    "quality_issues": [],
+    "last_updated": "2025-06-12T08:30:55"
+  },
+  "Tanisha Ray": {
+    "name": "Tanisha Ray",
+    "added_date": "2025-06-11T16:33:22",
+    "photo_paths": [
+      "known_faces\\photos\\Tanisha Ray_1.jpg"
+    ],
+    "access_level": "standard",
+    "notes": "",
+    "encoding_count": 1,
+    "quality_score": 1.0,
+    "quality_issues": []
+  },
+  "Souvik Karmakar": {
+    "name": "Souvik Karmakar",
+    "added_date": "2025-06-11T16:42:22",
+    "photo_paths": [
+      "known_faces\\photos\\Souvik Karmakar_1.jpg",
+      "known_faces\\photos\\Souvik Karmakar_2.jpg"
+    ],
+    "access_level": "guest",
+    "notes": "",
+    "encoding_count": 2,
+    "quality_score": 1.0,
+    "quality_issues": [],
+    "last_updated": "2025-06-12T08:31:10"
+  },
+  "Ayananshu Choudhury": {
+    "name": "Ayananshu Choudhury",
+    "added_date": "2025-06-19T16:14:54",
+    "photo_paths": [
+      "known_faces\\photos\\Ayananshu Choudhury_1.jpg"
+    ],
+    "access_level": "standard",
+    "notes": "",
+    "encoding_count": 1,
+    "quality_score": 1.0,
+    "quality_issues": []
+  }
+}

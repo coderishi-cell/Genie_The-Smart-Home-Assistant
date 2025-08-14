@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>API Test</title>
+</head>
+<body>
+    <h1>API Test</h1>
+    <button onclick="testDevices()">Test Devices API</button>
+    <button onclick="testTalk()">Test Talk API</button>
+    <div id="output"></div>
+
+    <script>
+        async function testDevices() {
+            try {
+                const response = await fetch('http://localhost:8000/api/devices');
+                const data = await response.json();
+                document.getElementById('output').innerHTML = '<h3>Devices Response:</h3><pre>' + JSON.stringify(data, null, 2) + '</pre>';
+                console.log('Devices:', data);
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('output').innerHTML = '<h3>Error:</h3>' + error.message;
+            }
+        }
+
+        async function testTalk() {
+            try {
+                const response = await fetch('http://localhost:8000/api/talk', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ message: 'turn off all the lights' }),
+                });
+                const data = await response.json();
+                document.getElementById('output').innerHTML = '<h3>Talk Response:</h3><pre>' + JSON.stringify(data, null, 2) + '</pre>';
+                console.log('Talk:', data);
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('output').innerHTML = '<h3>Error:</h3>' + error.message;
+            }
+        }
+    </script>
+</body>
+</html> 
